@@ -1,0 +1,122 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Dashboard Home{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-serif text-navy-deep mb-2">Welcome to Dashboard</h1>
+    <p class="text-gray-600">Manage your website content easily</p>
+</div>
+
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600 mb-1">Total Pages</p>
+                <p class="text-3xl font-bold text-navy-deep">{{ total_pages }}</p>
+            </div>
+            <div class="w-12 h-12 bg-navy-deep/10 rounded-full flex items-center justify-center">
+                <i class="fas fa-file-alt text-2xl text-navy-deep"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600 mb-1">Active Sections</p>
+                <p class="text-3xl font-bold text-navy-deep">{{ total_sections }}</p>
+            </div>
+            <div class="w-12 h-12 bg-gold/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-layer-group text-2xl text-gold"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-600 mb-1">Quick Actions</p>
+                <p class="text-lg font-semibold text-navy-deep">Get Started</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-rocket text-2xl text-green-600"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Access to Pages -->
+<div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-navy-deep">Your Pages</h2>
+        <a href="{% url 'dashboard:pages_list' %}" class="text-gold hover:text-navy-deep transition-colors">
+            View All <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+    </div>
+    
+    {% if pages %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for page in pages %}
+        <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-navy-deep mb-1">{{ page.name }}</h3>
+                    <p class="text-sm text-gray-500">/{{ page.slug }}</p>
+                </div>
+                {% if page.is_active %}
+                <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Active</span>
+                {% endif %}
+            </div>
+            
+            <div class="flex items-center text-sm text-gray-600 mb-4">
+                <i class="fas fa-layer-group mr-2"></i>
+                <span>{{ page.sections.count }} sections</span>
+            </div>
+            
+            <a href="{% url 'dashboard:page_builder' page.id %}" class="block w-full text-center px-4 py-2 bg-navy-deep text-white rounded-lg hover:bg-navy-midnight transition-colors">
+                <i class="fas fa-edit mr-2"></i> Open Builder
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+        <i class="fas fa-file-alt text-6xl text-gray-300 mb-4"></i>
+        <p class="text-gray-600 mb-4">No pages yet.</p>
+        <a href="{% url 'admin:myApp_page_add' %}" class="inline-block px-6 py-2 bg-navy-deep text-white rounded-lg hover:bg-navy-midnight transition-colors">
+            Create Your First Page
+        </a>
+        <p class="text-sm text-gray-500 mt-2">(Admin access required for page creation)</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Help Section -->
+<div class="bg-gradient-to-br from-navy-deep to-navy-midnight rounded-xl shadow-lg p-8 text-white">
+    <h2 class="text-2xl font-serif text-gold mb-4">Need Help?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <h3 class="font-semibold mb-2">Getting Started</h3>
+            <ul class="space-y-2 text-sm text-white/80">
+                <li><i class="fas fa-check-circle text-gold mr-2"></i> Select a page to edit</li>
+                <li><i class="fas fa-check-circle text-gold mr-2"></i> Add or reorder sections</li>
+                <li><i class="fas fa-check-circle text-gold mr-2"></i> Edit content and images</li>
+                <li><i class="fas fa-check-circle text-gold mr-2"></i> Preview your changes</li>
+            </ul>
+        </div>
+        <div>
+            <h3 class="font-semibold mb-2">Tips</h3>
+            <ul class="space-y-2 text-sm text-white/80">
+                <li><i class="fas fa-lightbulb text-gold mr-2"></i> Use "Pick Image" for easy image selection</li>
+                <li><i class="fas fa-lightbulb text-gold mr-2"></i> Toggle sections on/off to hide them temporarily</li>
+                <li><i class="fas fa-lightbulb text-gold mr-2"></i> Reorder sections by clicking up/down arrows</li>
+                <li><i class="fas fa-lightbulb text-gold mr-2"></i> Always preview after saving changes</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

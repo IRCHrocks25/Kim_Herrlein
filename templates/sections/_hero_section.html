@@ -1,0 +1,132 @@
+{% if hero_section.show_section %}
+{% comment %} Determine background styling {% endcomment %}
+{% if hero_section.background_image_url %}
+<section class="relative py-24 md:py-32 overflow-hidden bg-cover bg-center bg-no-repeat" style="background-image: url('{{ hero_section.background_image_url }}');">
+{% elif hero_section.gradient_type == 'linear' and hero_section.gradient_colors|length > 0 %}
+{% comment %} Convert Tailwind direction to CSS direction {% endcomment %}
+{% if hero_section.gradient_direction == 'to-right' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to right, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_direction == 'to-bottom' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to bottom, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_direction == 'to-left' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to left, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_direction == 'to-top' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to top, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_direction == 'to-top-right' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to top right, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_direction == 'to-bottom-right' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to bottom right, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_direction == 'to-top-left' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to top left, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_direction == 'to-bottom-left' %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to bottom left, {{ hero_section.gradient_colors|join:', ' }});">
+{% else %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: linear-gradient(to right, {{ hero_section.gradient_colors|join:', ' }});">
+{% endif %}
+{% elif hero_section.gradient_type == 'radial' and hero_section.gradient_colors|length > 0 %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: radial-gradient(circle, {{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.gradient_type == 'conic' and hero_section.gradient_colors|length > 0 %}
+<section class="relative py-24 md:py-32 overflow-hidden" style="background: conic-gradient({{ hero_section.gradient_colors|join:', ' }});">
+{% elif hero_section.background_style == 'dark_band' %}
+<section class="relative bg-gradient-to-br from-navy-deep via-navy-midnight to-navy-deep py-24 md:py-32 overflow-hidden">
+{% else %}
+<section class="relative bg-white py-24 md:py-32 overflow-hidden">
+{% endif %}
+    <!-- Background Spiral Effect (only if not using custom background) -->
+    {% if not hero_section.background_image_url and hero_section.background_style == 'dark_band' %}
+    <div class="absolute inset-0 spiral-bg opacity-30"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
+    {% endif %}
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 {% if hero_section.layout_variant == 'text_left_image_right' %}lg:grid-cols-2{% endif %} gap-12 items-center">
+            <!-- Left: Text Content -->
+            <div class="space-y-6">
+                {% if hero_section.icon %}
+                <div class="text-gold text-3xl mb-4">
+                    <i class="{{ hero_section.icon }}"></i>
+                </div>
+                {% endif %}
+                
+                <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
+                    {{ hero_section.headline }}
+                </h1>
+                
+                <p class="text-xl text-white/80 font-light leading-relaxed">
+                    {{ hero_section.subheadline }}
+                </p>
+                
+                {% if hero_section.body_text %}
+                <p class="text-lg text-white/70 leading-relaxed">
+                    {{ hero_section.body_text }}
+                </p>
+                {% endif %}
+                
+                {% if hero_section.quote_text %}
+                <blockquote class="border-l-4 border-gold pl-6 py-4 my-6">
+                    <p class="font-serif text-xl text-gold italic">{{ hero_section.quote_text }}</p>
+                    {% if hero_section.quote_attribution %}
+                    <cite class="text-white/60 text-sm mt-2 block">— {{ hero_section.quote_attribution }}</cite>
+                    {% endif %}
+                </blockquote>
+                {% endif %}
+                
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    {% if hero_section.primary_button_label %}
+                        {% if hero_section.primary_button_shape == 'pill' %}
+                            <a href="{{ hero_section.primary_button_url }}" class="px-8 py-4 bg-gold text-navy-deep rounded-full font-semibold hover:bg-champagne hover:scale-105 transition-all duration-300 shadow-lg shadow-gold/30 text-center">
+                                {{ hero_section.primary_button_label }}
+                            </a>
+                        {% elif hero_section.primary_button_shape == 'square' %}
+                            <a href="{{ hero_section.primary_button_url }}" class="px-8 py-4 bg-gold text-navy-deep rounded-none font-semibold hover:bg-champagne hover:scale-105 transition-all duration-300 shadow-lg shadow-gold/30 text-center">
+                                {{ hero_section.primary_button_label }}
+                            </a>
+                        {% else %}
+                            <a href="{{ hero_section.primary_button_url }}" class="px-8 py-4 bg-gold text-navy-deep rounded-lg font-semibold hover:bg-champagne hover:scale-105 transition-all duration-300 shadow-lg shadow-gold/30 text-center">
+                                {{ hero_section.primary_button_label }}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    {% if hero_section.secondary_button_label %}
+                        {% if hero_section.secondary_button_shape == 'pill' %}
+                            <a href="{{ hero_section.secondary_button_url }}" class="px-8 py-4 border-2 border-gold text-gold rounded-full font-semibold hover:bg-gold/10 transition-all duration-300 text-center">
+                                {{ hero_section.secondary_button_label }}
+                            </a>
+                        {% elif hero_section.secondary_button_shape == 'square' %}
+                            <a href="{{ hero_section.secondary_button_url }}" class="px-8 py-4 border-2 border-gold text-gold rounded-none font-semibold hover:bg-gold/10 transition-all duration-300 text-center">
+                                {{ hero_section.secondary_button_label }}
+                            </a>
+                        {% else %}
+                            <a href="{{ hero_section.secondary_button_url }}" class="px-8 py-4 border-2 border-gold text-gold rounded-lg font-semibold hover:bg-gold/10 transition-all duration-300 text-center">
+                                {{ hero_section.secondary_button_label }}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                
+                {% if hero_section.primary_button_label == "Schedule Your Free Clarity Call" %}
+                <p class="text-white/60 text-sm italic">Discover how realignment begins.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Right: Image -->
+            {% if hero_section.image_url and hero_section.layout_variant == 'text_left_image_right' %}
+            <div class="relative">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl">
+                    <img src="{{ hero_section.image_url }}" alt="{{ hero_section.image_alt_text }}" class="w-full h-auto object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy-deep/50 to-transparent"></div>
+                </div>
+                <!-- Decorative golden thread -->
+                <div class="absolute -bottom-4 left-1/4 w-1/2 h-1 golden-thread"></div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if hero_section.show_divider_below %}
+    <div class="golden-thread mt-16"></div>
+    {% endif %}
+</section>
+{% endif %}
+
+

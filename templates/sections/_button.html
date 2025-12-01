@@ -1,0 +1,39 @@
+{% comment %}
+Reusable button partial that handles shapes and variants
+Usage: {% include 'sections/_button.html' with button_label=section.primary_button_label button_url=section.primary_button_url button_variant=section.primary_button_variant button_shape=section.primary_button_shape button_type='primary' %}
+{% endcomment %}
+
+{% if button_label %}
+    {% comment %} Determine button shape classes {% endcomment %}
+    {% if button_shape == 'pill' %}
+        {% with shape_class="rounded-full" %}
+    {% elif button_shape == 'square' %}
+        {% with shape_class="rounded-none" %}
+    {% else %}
+        {% with shape_class="rounded-lg" %}
+    {% endif %}
+    
+    {% comment %} Determine button variant classes {% endcomment %}
+    {% if button_type == 'primary' %}
+        {% if button_variant == 'primary' %}
+            {% with variant_class="bg-gold text-navy-deep hover:bg-champagne shadow-lg shadow-gold/30" %}
+        {% elif button_variant == 'secondary' %}
+            {% with variant_class="bg-navy-deep text-white hover:bg-navy-midnight" %}
+        {% else %}
+            {% with variant_class="bg-gray-200 text-gray-800 hover:bg-gray-300" %}
+        {% endif %}
+    {% else %}
+        {% if button_variant == 'link' %}
+            {% with variant_class="border-2 border-gold text-gold hover:bg-gold/10" %}
+        {% else %}
+            {% with variant_class="border-2 border-gray-300 text-gray-700 hover:bg-gray-50" %}
+        {% endif %}
+    {% endif %}
+    
+    <a href="{{ button_url }}" class="inline-block px-8 py-4 {{ shape_class }} {{ variant_class }} font-semibold hover:scale-105 transition-all duration-300 text-center">
+        {{ button_label }}
+    </a>
+    {% endwith %}
+    {% endwith %}
+{% endif %}
+

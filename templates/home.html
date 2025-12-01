@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Hero Section -->
+    {% if hero_section %}
+        {% with hero_section=hero_section %}
+            {% include 'sections/_hero_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Statistics Section -->
+    {% if statistics_section %}
+        {% with statistics_section=statistics_section %}
+            {% include 'sections/_statistics_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Credibility Section -->
+    {% if credibility_section %}
+        {% with credibility_section=credibility_section %}
+            {% include 'sections/_credibility_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Testimonials Section -->
+    {% if testimonials_section %}
+        {% with testimonials_section=testimonials_section %}
+            {% include 'sections/_testimonials_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Pain Points & Solutions Section -->
+    {% if pain_points_section %}
+        {% with pain_points_section=pain_points_section %}
+            {% include 'sections/_pain_points_solutions_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- What Makes Me Different Section -->
+    {% if what_makes_me_different_section %}
+        {% with different_section=what_makes_me_different_section %}
+            {% include 'sections/_what_makes_me_different_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Featured Publications Section -->
+    {% if featured_publications_section %}
+        {% with publications_section=featured_publications_section %}
+            {% include 'sections/_featured_publications_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Services Section -->
+    {% if services_section %}
+        {% with services_section=services_section %}
+            {% include 'sections/_services_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Meet Kim Herrlein Section -->
+    {% if meet_kim_herrlein_section %}
+        {% with meet_kim_section=meet_kim_herrlein_section %}
+            {% include 'sections/_meet_kim_herrlein_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Mission Section -->
+    {% if mission_section %}
+        {% with mission_section=mission_section %}
+            {% include 'sections/_mission_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Free Resource Section -->
+    {% if free_resource_section %}
+        {% with free_resource_section=free_resource_section %}
+            {% include 'sections/_free_resource_section.html' %}
+        {% endwith %}
+    {% endif %}
+
+    <!-- Footer Section -->
+    {% if footer_section %}
+        {% with footer_section=footer_section %}
+            {% include 'sections/_footer_section.html' %}
+        {% endwith %}
+    {% endif %}
+{% endblock %}
+
+

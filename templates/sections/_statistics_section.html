@@ -1,0 +1,64 @@
+{% if statistics_section.show_section %}
+<section class="py-20 bg-gradient-to-b from-navy-midnight to-navy-deep text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if statistics_section.show_divider_above %}
+        <div class="golden-thread mb-16"></div>
+        {% endif %}
+        
+        <div class="text-center mb-12">
+            <h2 class="font-serif text-4xl md:text-5xl text-white mb-6">
+                {{ statistics_section.headline }}
+            </h2>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+                {{ statistics_section.intro_text }}
+            </p>
+        </div>
+        
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {% for stat in statistics_section.statitem_set.all %}
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-gold/20 hover:border-gold/40 transition-all duration-300 hover:scale-105">
+                {% if stat.icon %}
+                <div class="text-gold text-4xl mb-4">
+                    <i class="{{ stat.icon }}"></i>
+                </div>
+                {% endif %}
+                <div class="mb-4">
+                    {% if stat.value %}
+                    <div class="text-4xl font-serif text-gold mb-2">{{ stat.value }}</div>
+                    {% endif %}
+                    <h3 class="font-serif text-xl text-white mb-3">{{ stat.label }}</h3>
+                </div>
+                <p class="text-white/70 leading-relaxed">{{ stat.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- CTA -->
+        <div class="text-center">
+            {% if statistics_section.primary_button_label %}
+                {% if statistics_section.primary_button_shape == 'pill' %}
+                    <a href="{{ statistics_section.primary_button_url }}" class="inline-block px-8 py-4 bg-gold text-navy-deep rounded-full font-semibold hover:bg-champagne hover:scale-105 transition-all duration-300 shadow-lg shadow-gold/30">
+                        {{ statistics_section.primary_button_label }}
+                    </a>
+                {% elif statistics_section.primary_button_shape == 'square' %}
+                    <a href="{{ statistics_section.primary_button_url }}" class="inline-block px-8 py-4 bg-gold text-navy-deep rounded-none font-semibold hover:bg-champagne hover:scale-105 transition-all duration-300 shadow-lg shadow-gold/30">
+                        {{ statistics_section.primary_button_label }}
+                    </a>
+                {% else %}
+                    <a href="{{ statistics_section.primary_button_url }}" class="inline-block px-8 py-4 bg-gold text-navy-deep rounded-lg font-semibold hover:bg-champagne hover:scale-105 transition-all duration-300 shadow-lg shadow-gold/30">
+                        {{ statistics_section.primary_button_label }}
+                    </a>
+                {% endif %}
+            {% endif %}
+            <p class="text-white/60 text-sm mt-4 italic">Let's talk about where you are and where you're heading.</p>
+        </div>
+        
+        {% if statistics_section.show_divider_below %}
+        <div class="golden-thread mt-16"></div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+

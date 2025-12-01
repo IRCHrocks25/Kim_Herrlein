@@ -1,0 +1,57 @@
+{% if publications_section.show_section %}
+<section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if publications_section.show_divider_above %}
+        <div class="golden-thread mb-16 bg-gold"></div>
+        {% endif %}
+        
+        <div class="text-center mb-12">
+            <div class="text-gold text-4xl mb-4">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <h2 class="font-serif text-4xl md:text-5xl text-navy-deep mb-4">
+                {{ publications_section.headline }}
+            </h2>
+            {% if publications_section.subheadline %}
+            <p class="text-xl text-gray-700">
+                {{ publications_section.subheadline }}
+            </p>
+            {% endif %}
+            {% if publications_section.intro_text %}
+            <p class="text-lg text-gray-600 mt-4 max-w-3xl mx-auto">
+                {{ publications_section.intro_text }}
+            </p>
+            {% endif %}
+        </div>
+        
+        <!-- Publications Grid -->
+        <div class="grid grid-cols-1 {% if publications_section.layout_variant == 'cards_row' %}md:grid-cols-3{% endif %} gap-8">
+            {% for publication in publications_section.publication_set.all %}
+            <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gold/20 hover:shadow-xl hover:border-gold/40 transition-all duration-300 hover:scale-105">
+                {% if publication.image_url %}
+                <div class="aspect-[3/4] overflow-hidden">
+                    <img src="{{ publication.image_url }}" alt="{{ publication.image_alt_text }}" class="w-full h-full object-cover">
+                </div>
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="font-serif text-xl text-navy-deep mb-2">
+                        {{ publication.title }}
+                    </h3>
+                    {% if publication.subtitle %}
+                    <p class="text-sm text-gray-600 mb-4">{{ publication.subtitle }}</p>
+                    {% endif %}
+                    <p class="text-gray-700 text-sm leading-relaxed mb-6">
+                        {{ publication.description }}
+                    </p>
+                    <a href="{{ publication.button_url }}" class="inline-block w-full text-center px-6 py-3 bg-navy-deep text-white rounded-full font-semibold hover:bg-navy-midnight transition-all duration-300">
+                        {{ publication.button_label }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+

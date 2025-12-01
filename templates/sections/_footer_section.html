@@ -1,0 +1,110 @@
+{% if footer_section.show_section %}
+<footer class="bg-navy-deep text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Top Row: Brand + CTA -->
+        <div class="border-b border-gold/20 pb-8 mb-12">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div>
+                    <h3 class="font-serif text-2xl text-gold mb-2">
+                        Insight Seeker: 
+                        {% if footer_section.brand_line and "Impact by Design" in footer_section.brand_line %}
+                            <a href="https://katalyst-crm.com/" target="_blank" rel="noopener noreferrer" class="text-gold hover:text-champagne transition-colors">Impact by Design</a>
+                        {% elif footer_section.brand_line %}
+                            {{ footer_section.brand_line|safe }}
+                        {% else %}
+                            <a href="https://katalyst-crm.com/" target="_blank" rel="noopener noreferrer" class="text-gold hover:text-champagne transition-colors">Impact by Design</a>
+                        {% endif %}
+                    </h3>
+                    <p class="text-white/70">{{ footer_section.tagline|default:"Stop surviving. Start designing." }}</p>
+                </div>
+                <a href="#clarity-call" class="px-6 py-2.5 bg-gold text-navy-deep rounded-full font-medium hover:bg-champagne hover:scale-105 transition-all duration-300">
+                    Schedule Your Free Clarity Call
+                </a>
+            </div>
+        </div>
+
+        <!-- Middle: Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <!-- About -->
+            <div>
+                <h4 class="font-serif text-lg text-gold mb-4">About Insight Seeker</h4>
+                <p class="text-white/70 text-sm leading-relaxed">
+                    Transformational coaching for high-achieving women ready to move from fragmentation to aligned leadership.
+                </p>
+            </div>
+
+            <!-- Programs -->
+            <div>
+                <h4 class="font-serif text-lg text-gold mb-4">Programs</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#ccj" class="text-white/70 hover:text-gold transition-colors">Clarity Catalyst Journey</a></li>
+                    <li><a href="#caj" class="text-white/70 hover:text-gold transition-colors">Creative Action Journey</a></li>
+                    <li><a href="#mastermind" class="text-white/70 hover:text-gold transition-colors">Connect for Success Mastermind</a></li>
+                    <li><a href="#coaching" class="text-white/70 hover:text-gold transition-colors">1:1 Alignment Coaching</a></li>
+                    <li><a href="#retreats" class="text-white/70 hover:text-gold transition-colors">Elevate Retreats</a></li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div>
+                <h4 class="font-serif text-lg text-gold mb-4">Resources</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#framework" class="text-white/70 hover:text-gold transition-colors">Free Framework</a></li>
+                    <li><a href="#publications" class="text-white/70 hover:text-gold transition-colors">Publications</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect -->
+            <div>
+                <h4 class="font-serif text-lg text-gold mb-4">Connect</h4>
+                <div class="space-y-3">
+                    {% if footer_section.email %}
+                    <a href="mailto:{{ footer_section.email }}" class="block text-white/70 hover:text-gold transition-colors text-sm">
+                        <i class="fas fa-envelope mr-2"></i>{{ footer_section.email }}
+                    </a>
+                    {% endif %}
+                    {% if footer_section.phone %}
+                    <a href="tel:{{ footer_section.phone }}" class="block text-white/70 hover:text-gold transition-colors text-sm">
+                        <i class="fas fa-phone mr-2"></i>{{ footer_section.phone }}
+                    </a>
+                    {% endif %}
+                    <div class="flex space-x-4 mt-4">
+                        {% for social in footer_section.sociallink_set.all %}
+                        <a href="{{ social.url }}" target="_blank" rel="noopener noreferrer" class="text-white/70 hover:text-gold transition-colors">
+                            <i class="{{ social.icon|default:'fab fa-instagram' }} text-xl"></i>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom: Legal -->
+        <div class="border-t border-gold/20 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-sm text-white/60">
+                <div>
+                    <p>&copy; {% now "Y" %} Insight Seeker: 
+                        {% if footer_section.copyright_text and "Impact by Design" in footer_section.copyright_text %}
+                            <a href="https://katalyst-crm.com/" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-gold transition-colors">Impact by Design</a>
+                        {% elif footer_section.copyright_text %}
+                            {{ footer_section.copyright_text|safe }}
+                        {% else %}
+                            <a href="https://katalyst-crm.com/" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-gold transition-colors">Impact by Design</a>
+                        {% endif %}
+                    </p>
+                    <p class="mt-1">{{ footer_section.location_line|default:"West Coast Base | Global Reach | Online Programs" }}</p>
+                </div>
+                <div class="flex space-x-4">
+                    {% for link in footer_section.footerlink_set.all %}
+                    <a href="{{ link.url }}" class="hover:text-gold transition-colors">{{ link.label }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <p class="text-xs text-white/50 mt-6 text-center max-w-3xl mx-auto">
+                Transformational coaching for high-achieving women ready to move from fragmentation to aligned leadership. When one woman rises, she lights the way for many.
+            </p>
+        </div>
+    </div>
+</footer>
+{% endif %}
+

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Insight Seeker Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a1929 0%, #1a2332 50%, #0f172a 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Dotted pattern overlay */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .login-container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+        
+        .input-field {
+            padding-left: 3rem;
+            padding-right: 3rem;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .password-toggle:hover {
+            color: #64748b;
+        }
+        
+        /* Background geometric shapes */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            filter: blur(60px);
+        }
+        
+        .bg-shape-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #d4af37 0%, #f7e7ce 100%);
+            top: -150px;
+            right: -100px;
+        }
+        
+        .bg-shape-2 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #8b9dc3 0%, #4169e1 100%);
+            bottom: -100px;
+            right: 150px;
+        }
+        
+        .bg-shape-3 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #e8b4a0 0%, #d4af37 100%);
+            top: 50%;
+            left: -100px;
+        }
+        
+        .bg-shape-4 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, #d4af37 0%, #f7e7ce 100%);
+            top: 20%;
+            left: 10%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Geometric Shapes -->
+    <div class="bg-shapes">
+        <div class="bg-shape bg-shape-1"></div>
+        <div class="bg-shape bg-shape-2"></div>
+        <div class="bg-shape bg-shape-3"></div>
+        <div class="bg-shape bg-shape-4"></div>
+    </div>
+    
+    <div class="login-container min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="w-full max-w-6xl">
+            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[600px]">
+                <!-- Left Section: Login Form -->
+                <div class="flex-1 p-8 lg:p-12 flex flex-col justify-center">
+                    <!-- Logo and Title -->
+                    <div class="mb-8">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-gold to-champagne rounded-lg flex items-center justify-center">
+                                <span class="text-2xl">🌀</span>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-serif text-slate-900 font-bold">Insight Seeker</h1>
+                                <p class="text-sm text-slate-600 font-medium">
+                                    <a href="https://katalyst-crm.com/" target="_blank" rel="noopener noreferrer" class="hover:text-gold transition-colors">Impact by Design</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Welcome Message -->
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-serif text-slate-900 mb-2 font-bold">Welcome Back</h2>
+                        <p class="text-slate-700 text-base leading-relaxed">Access your content dashboard — manage pages, edit sections, and update your website with ease.</p>
+                    </div>
+                    
+                    <!-- Messages -->
+                    {% if messages %}
+                    <div class="mb-6">
+                        {% for message in messages %}
+                        <div class="bg-red-50 border-2 border-red-300 text-red-800 px-4 py-3 rounded-lg text-sm font-medium">
+                            <i class="fas fa-exclamation-circle mr-2"></i>{{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if form.errors %}
+                    <div class="mb-6">
+                        <div class="bg-red-50 border-2 border-red-300 text-red-800 px-4 py-3 rounded-lg text-sm font-medium">
+                            <i class="fas fa-exclamation-circle mr-2"></i>Please enter a correct username and password. Note that both fields may be case-sensitive.
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Login Form -->
+                    <form method="post" action="{% url 'login' %}" class="space-y-6">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.GET.next|default:'/dashboard/' }}">
+                        
+                        <!-- Username/Email Field -->
+                        <div>
+                            <label for="username" class="block text-sm font-semibold text-slate-800 mb-2">Username</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                <input 
+                                    type="text" 
+                                    id="username" 
+                                    name="username" 
+                                    required
+                                    class="input-field w-full bg-slate-50 border-2 border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition-all"
+                                    placeholder="Enter your username"
+                                    autocomplete="username"
+                                    autofocus
+                                >
+                            </div>
+                        </div>
+                        
+                        <!-- Password Field -->
+                        <div>
+                            <label for="password" class="block text-sm font-semibold text-slate-800 mb-2">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    required
+                                    class="input-field w-full bg-slate-50 border-2 border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition-all"
+                                    placeholder="Enter your password"
+                                    autocomplete="current-password"
+                                >
+                                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Sign In Button -->
+                        <button 
+                            type="submit"
+                            class="w-full bg-gradient-to-r from-navy-deep via-navy-midnight to-navy-deep text-white font-semibold py-3 rounded-lg hover:from-navy-midnight hover:via-navy-deep hover:to-navy-midnight transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                            style="background: linear-gradient(135deg, #0a1929 0%, #1a2332 50%, #0a1929 100%);"
+                        >
+                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In to Dashboard
+                        </button>
+                        
+                        <!-- Links -->
+                        <div class="flex items-center justify-between text-sm">
+                            <a href="#" class="text-slate-700 hover:text-gold hover:underline font-medium">Forgot your password?</a>
+                            <a href="{% url 'home' %}" class="text-slate-700 hover:text-gold hover:underline font-medium">Back to Website</a>
+                        </div>
+                    </form>
+                    
+                    <!-- Help Text -->
+                    <div class="mt-8 pt-6 border-t border-slate-200">
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            Need help accessing your dashboard? Contact 
+                            <a href="mailto:Connect@KimHerrlein.com" class="text-gold hover:text-navy-deep hover:underline font-medium">Connect@KimHerrlein.com</a> 
+                            or reach out to your administrator for assistance.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Right Section: Promotional Image -->
+                <div class="flex-1 bg-gradient-to-br from-slate-50 to-slate-100 p-8 lg:p-12 flex flex-col justify-center items-center relative overflow-hidden">
+                    <div class="w-full h-full flex items-center justify-center">
+                        <img 
+                            src="https://katalyst-crm.com/wp-content/uploads/2024/10/Katalyst-Project-2.1.png" 
+                            alt="Insight Seeker Dashboard" 
+                            class="max-w-full max-h-full object-contain drop-shadow-2xl"
+                            style="filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));"
+                        >
+                    </div>
+                    
+                    <!-- Welcome Text Overlay -->
+                    <div class="absolute bottom-8 left-8 right-8 z-20 text-slate-900">
+                        <h3 class="text-2xl font-serif mb-2 font-bold">Insight Seeker Dashboard</h3>
+                        <p class="text-slate-700 text-base leading-relaxed">Your central hub for managing content — edit pages, update sections, and design your website with clarity and intention.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle icon
+                if (type === 'password') {
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

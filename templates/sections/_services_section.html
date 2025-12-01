@@ -1,0 +1,79 @@
+{% if services_section.show_section %}
+<section class="py-20 bg-gradient-to-b from-navy-midnight via-periwinkle/10 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if services_section.show_divider_above %}
+        <div class="golden-thread mb-16"></div>
+        {% endif %}
+        
+        <div class="text-center mb-12">
+            <h2 class="font-serif text-4xl md:text-5xl text-navy-deep mb-4">
+                {{ services_section.headline }}
+            </h2>
+            {% if services_section.subheadline %}
+            <p class="text-xl text-gray-700">
+                {{ services_section.subheadline }}
+            </p>
+            {% endif %}
+            {% if services_section.intro_quote %}
+            <blockquote class="max-w-3xl mx-auto mt-8 border-l-4 border-gold pl-6 py-4">
+                <p class="font-serif text-xl text-navy-deep italic">
+                    "{{ services_section.intro_quote }}"
+                </p>
+                {% if services_section.intro_quote_attribution %}
+                <cite class="text-gray-600 text-sm mt-2 block">— {{ services_section.intro_quote_attribution }}</cite>
+                {% endif %}
+            </blockquote>
+            {% endif %}
+        </div>
+        
+        <!-- Services Grid -->
+        <div class="grid grid-cols-1 {% if services_section.layout_variant == 'cards_grid' %}md:grid-cols-2{% endif %} gap-8">
+            {% for service in services_section.service_set.all %}
+            <div class="bg-white rounded-2xl p-8 shadow-lg border border-gold/20 hover:shadow-xl hover:border-gold/40 transition-all duration-300">
+                {% if service.icon %}
+                <div class="text-gold text-4xl mb-4">
+                    <i class="{{ service.icon }}"></i>
+                </div>
+                {% endif %}
+                <div class="mb-4">
+                    <h3 class="font-serif text-2xl text-navy-deep mb-2">
+                        {{ service.name }}
+                    </h3>
+                    <p class="text-sm text-gold font-medium">{{ service.short_label }}</p>
+                </div>
+                <p class="text-gray-700 leading-relaxed mb-6">
+                    {{ service.description }}
+                </p>
+                
+                {% if service.bullets %}
+                <ul class="space-y-2 mb-6">
+                    {% for bullet in service.bullets %}
+                    <li class="flex items-start gap-2 text-gray-700">
+                        <i class="fas fa-check-circle text-gold mt-1 flex-shrink-0"></i>
+                        <span>{{ bullet }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                
+                {% if service.cohort_details %}
+                <div class="bg-gold/10 rounded-lg p-4 mb-6">
+                    <p class="text-sm text-gray-700">{{ service.cohort_details }}</p>
+                </div>
+                {% endif %}
+                
+                {% if service.pricing_note %}
+                <p class="text-sm text-gray-600 mb-6">{{ service.pricing_note }}</p>
+                {% endif %}
+                
+                <a href="{{ service.primary_button_url }}" class="inline-block w-full text-center px-6 py-3 bg-navy-deep text-white rounded-full font-semibold hover:bg-navy-midnight transition-all duration-300">
+                    {{ service.primary_button_label }}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+

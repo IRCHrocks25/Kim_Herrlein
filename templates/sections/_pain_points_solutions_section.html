@@ -1,0 +1,86 @@
+{% if pain_points_section.show_section %}
+<section class="py-20 bg-gradient-to-b from-navy-deep via-navy-midnight to-navy-deep text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if pain_points_section.show_divider_above %}
+        <div class="golden-thread mb-16"></div>
+        {% endif %}
+        
+        <div class="text-center mb-16">
+            <h2 class="font-serif text-4xl md:text-5xl text-white mb-4">
+                {{ pain_points_section.headline }}
+            </h2>
+            {% if pain_points_section.subheadline %}
+            <p class="text-xl text-white/80">
+                {{ pain_points_section.subheadline }}
+            </p>
+            {% endif %}
+            {% if pain_points_section.intro_text %}
+            <p class="text-lg text-white/70 mt-4 max-w-3xl mx-auto">
+                {{ pain_points_section.intro_text }}
+            </p>
+            {% endif %}
+        </div>
+        
+        <!-- Pain Points -->
+        <div class="space-y-12 mb-16">
+            {% for pain_point in pain_points_section.painpoint_set.all %}
+            <div class="grid grid-cols-1 {% if pain_points_section.layout_variant == 'two_column_pairs' %}lg:grid-cols-2{% endif %} gap-8 items-start">
+                <!-- Pain Statement -->
+                <div class="space-y-4">
+                    {% if pain_point.icon_pain %}
+                    <div class="text-rose-gold text-3xl mb-4">
+                        <i class="{{ pain_point.icon_pain }}"></i>
+                    </div>
+                    {% endif %}
+                    <blockquote class="text-2xl font-serif text-white/90 border-l-4 border-rose-gold pl-6">
+                        "{{ pain_point.pain_quote }}"
+                    </blockquote>
+                    <p class="text-white/70 leading-relaxed">
+                        {{ pain_point.description }}
+                    </p>
+                </div>
+                
+                <!-- What Changes -->
+                <div class="bg-gold/10 backdrop-blur-sm rounded-2xl p-8 border border-gold/30">
+                    {% if pain_point.icon_solution %}
+                    <div class="text-gold text-3xl mb-4">
+                        <i class="{{ pain_point.icon_solution }}"></i>
+                    </div>
+                    {% endif %}
+                    <h3 class="font-serif text-2xl text-gold mb-4">
+                        {{ pain_point.what_changes_label }}
+                    </h3>
+                    <p class="text-white/90 leading-relaxed">
+                        {{ pain_point.what_changes_body }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Golden Thread Quote -->
+        {% if pain_points_section.golden_thread_quote_text %}
+        <div class="text-center mb-12">
+            <blockquote class="max-w-3xl mx-auto">
+                <p class="font-serif text-2xl md:text-3xl text-gold italic mb-4">
+                    "{{ pain_points_section.golden_thread_quote_text }}"
+                </p>
+                {% if pain_points_section.golden_thread_quote_attribution %}
+                <cite class="text-white/60">— {{ pain_points_section.golden_thread_quote_attribution }}</cite>
+                {% endif %}
+            </blockquote>
+        </div>
+        {% endif %}
+        
+        <!-- CTA -->
+        <div class="text-center">
+            <a href="{{ pain_points_section.primary_button_url }}" class="inline-block px-8 py-4 bg-gold text-navy-deep rounded-full font-semibold hover:bg-champagne hover:scale-105 transition-all duration-300 shadow-lg shadow-gold/30">
+                {{ pain_points_section.primary_button_label }}
+            </a>
+            <p class="text-white/60 text-sm mt-4 italic">Let's turn recognition into action.</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+

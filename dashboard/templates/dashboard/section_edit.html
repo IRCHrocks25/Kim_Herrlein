@@ -1,0 +1,591 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Edit {{ section.get_section_type_display }} - Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-12 h-12 bg-gold/20 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-edit text-gold text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-serif text-navy-deep font-bold">Edit Section</h1>
+                    <p class="text-gray-600">{{ section.get_section_type_display }} on {{ section.page.name }}</p>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'dashboard:page_builder' section.page.id %}" class="px-6 py-2.5 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Page Builder
+        </a>
+    </div>
+    
+    <!-- Help Banner -->
+    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg">
+        <div class="flex items-start">
+            <i class="fas fa-lightbulb text-blue-600 mt-1 mr-3"></i>
+            <div>
+                <p class="text-blue-800 font-medium mb-1">Editing Tips</p>
+                <p class="text-blue-700 text-sm">Fill in the fields below to customize this section. After saving, use "Preview Website" to see your changes live.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" action="{% url 'dashboard:section_edit' section.id %}" class="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+    {% csrf_token %}
+    
+    <!-- Internal Label -->
+    <div class="mb-8 bg-gray-50 rounded-lg p-4 border border-gray-200">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">
+            <i class="fas fa-tag mr-2 text-gray-500"></i>Section Name (For Your Reference)
+        </label>
+        <input type="text" name="internal_label" value="{{ section.internal_label }}" 
+               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold bg-white">
+        <p class="text-xs text-gray-500 mt-2">
+            <i class="fas fa-info-circle mr-1"></i>
+            This name helps you identify this section in the page builder. It won't appear on your website.
+        </p>
+    </div>
+    
+    <!-- Content Section Header -->
+    <div class="mb-6 border-t-2 border-gray-200 pt-6">
+        <h2 class="text-2xl font-semibold text-navy-deep mb-2 flex items-center gap-2">
+            <i class="fas fa-pencil-alt text-gold"></i>
+            Content
+        </h2>
+        <p class="text-gray-600 text-sm">Add the text and content that will appear on your website</p>
+    </div>
+    
+    <!-- Headline -->
+    {% if section.section_type == 'hero' or section.section_type == 'statistics' or section.section_type == 'testimonials' or section.section_type == 'pain_points' or section.section_type == 'what_makes_me_different' or section.section_type == 'featured_publications' or section.section_type == 'services' or section.section_type == 'meet_kim' or section.section_type == 'mission' or section.section_type == 'free_resource' %}
+    <div class="mb-6">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">
+            Main Headline <span class="text-red-500">*</span>
+        </label>
+        <input type="text" name="headline" value="{{ config.headline|default:'' }}" 
+               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold text-base"
+               placeholder="Enter your main headline here...">
+        <p class="text-xs text-gray-500 mt-2">
+            <i class="fas fa-info-circle mr-1"></i>
+            This is the main title that visitors will see first. Make it clear and compelling.
+        </p>
+    </div>
+    {% endif %}
+    
+    <!-- Subheadline -->
+    {% if section.section_type == 'hero' or section.section_type == 'testimonials' or section.section_type == 'pain_points' or section.section_type == 'what_makes_me_different' or section.section_type == 'featured_publications' or section.section_type == 'services' or section.section_type == 'meet_kim' or section.section_type == 'free_resource' %}
+    <div class="mb-6">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">Subheadline</label>
+        <textarea name="subheadline" rows="3" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">{{ config.subheadline|default:'' }}</textarea>
+    </div>
+    {% endif %}
+    
+    <!-- Body Text -->
+    {% if section.section_type == 'hero' or section.section_type == 'meet_kim' or section.section_type == 'mission' or section.section_type == 'free_resource' %}
+    <div class="mb-6">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">Body Text</label>
+        <textarea name="body_text" rows="5" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">{{ config.body_text|default:'' }}</textarea>
+        <p class="text-sm text-gray-500 mt-1">Main content text for this section</p>
+    </div>
+    {% endif %}
+    
+    <!-- Intro Text (for Statistics, Credibility, etc.) -->
+    {% if section.section_type == 'statistics' or section.section_type == 'credibility' %}
+    <div class="mb-6">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">Intro Text</label>
+        <textarea name="intro_text" rows="3" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">{{ config.intro_text|default:'' }}</textarea>
+        <p class="text-sm text-gray-500 mt-1">Introduction text that appears before the main content</p>
+    </div>
+    {% endif %}
+    
+    <!-- Quote Fields (for Hero, Meet Kim, etc.) -->
+    {% if section.section_type == 'hero' or section.section_type == 'meet_kim' %}
+    <div class="mb-6 border-t border-gray-200 pt-6">
+        <h3 class="text-lg font-semibold text-navy-deep mb-4">Quote</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Quote Text</label>
+                <textarea name="quote_text" rows="3" 
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">{{ config.quote_text|default:'' }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Quote Attribution</label>
+                <input type="text" name="quote_attribution" 
+                       value="{{ config.quote_attribution|default:'' }}" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                       placeholder="e.g., Kim Herrlein">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Icon Field -->
+    {% if section.section_type == 'hero' %}
+    <div class="mb-6">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">Icon (FontAwesome Class)</label>
+        <input type="text" name="icon" 
+               value="{{ config.icon|default:'' }}" 
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+               placeholder="e.g., fa-solid fa-compass">
+        <p class="text-sm text-gray-500 mt-1">FontAwesome icon class (optional)</p>
+    </div>
+    {% endif %}
+    
+    <!-- Image Fields -->
+    {% if section.section_type == 'hero' or section.section_type == 'credibility' or section.section_type == 'meet_kim' or section.section_type == 'free_resource' %}
+    <div class="mb-8 border-t-2 border-gray-200 pt-6">
+        <h2 class="text-2xl font-semibold text-navy-deep mb-4 flex items-center gap-2">
+            <i class="fas fa-image text-gold"></i>
+            Image
+        </h2>
+        
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-navy-deep mb-2">
+                Image URL
+            </label>
+            <div class="flex gap-2">
+                <input type="url" name="image_url" id="image_url" 
+                       value="{{ config.image.url|default:'' }}" 
+                       class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold text-base"
+                       placeholder="https://... or click Pick Image">
+                <button type="button" onclick="openImagePickerModal('image_url')" 
+                        class="px-6 py-3 bg-gold text-navy-deep rounded-lg hover:bg-champagne transition-colors font-semibold whitespace-nowrap shadow-lg hover:shadow-xl">
+                    <i class="fas fa-images mr-2"></i> Pick Image
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">
+                <i class="fas fa-info-circle mr-1"></i>
+                Paste an image URL or click "Pick Image" to choose from your gallery
+            </p>
+        {% if config.image.url %}
+        <div class="mt-4">
+            <img id="image_url_preview" src="{{ config.image.url }}" alt="Preview" 
+                 class="max-w-xs rounded-lg border border-gray-300">
+        </div>
+        {% else %}
+        <div class="mt-4 hidden" id="image_url_preview_container">
+            <img id="image_url_preview" src="" alt="Preview" 
+                 class="max-w-xs rounded-lg border border-gray-300">
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="mb-6">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">Image Alt Text</label>
+        <input type="text" name="image_alt_text" 
+               value="{{ config.image.alt_text|default:'' }}" 
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+    </div>
+    {% endif %}
+    
+    <!-- Secondary Button (for Hero) -->
+    {% if section.section_type == 'hero' %}
+    <div class="mb-6 border-t border-gray-200 pt-6">
+        <h3 class="text-lg font-semibold text-navy-deep mb-4">Secondary Button (Optional)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Label</label>
+                <input type="text" name="secondary_button_label" 
+                       value="{{ config.secondary_button.label|default:'' }}" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">URL</label>
+                <input type="text" name="secondary_button_url" 
+                       value="{{ config.secondary_button.url|default:'' }}" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                       pattern="^(https?://|#|/).*"
+                       title="Enter a full URL (http://...), anchor link (#section), or relative path (/page)">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Variant</label>
+                <select name="secondary_button_variant" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                    <option value="link" {% if config.secondary_button.variant == 'link' %}selected{% endif %}>Link</option>
+                    <option value="subtle" {% if config.secondary_button.variant == 'subtle' %}selected{% endif %}>Subtle</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Shape</label>
+                <select name="secondary_button_shape" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                    <option value="rounded" {% if config.secondary_button.shape == 'rounded' or not config.secondary_button.shape %}selected{% endif %}>Rounded</option>
+                    <option value="pill" {% if config.secondary_button.shape == 'pill' %}selected{% endif %}>Pill</option>
+                    <option value="square" {% if config.secondary_button.shape == 'square' %}selected{% endif %}>Square</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Primary Button -->
+    {% if section.section_type != 'footer' %}
+    <div class="mb-8 border-t-2 border-gray-200 pt-6">
+        <h2 class="text-2xl font-semibold text-navy-deep mb-4 flex items-center gap-2">
+            <i class="fas fa-mouse-pointer text-gold"></i>
+            Call-to-Action Button
+        </h2>
+        <p class="text-gray-600 text-sm mb-4">This is the main button visitors will click on this section</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Label</label>
+                <input type="text" name="primary_button_label" 
+                       value="{{ config.primary_button.label|default:'' }}" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">URL</label>
+                <input type="text" name="primary_button_url" 
+                       value="{{ config.primary_button.url|default:'' }}" 
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                       pattern="^(https?://|#|/).*"
+                       title="Enter a full URL (http://...), anchor link (#section), or relative path (/page)">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Variant</label>
+                <select name="primary_button_variant" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                    <option value="primary" {% if config.primary_button.variant == 'primary' %}selected{% endif %}>Primary</option>
+                    <option value="secondary" {% if config.primary_button.variant == 'secondary' %}selected{% endif %}>Secondary</option>
+                    <option value="subtle" {% if config.primary_button.variant == 'subtle' %}selected{% endif %}>Subtle</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-navy-deep mb-2">Shape</label>
+                <select name="primary_button_shape" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                    <option value="rounded" {% if config.primary_button.shape == 'rounded' or not config.primary_button.shape %}selected{% endif %}>Rounded</option>
+                    <option value="pill" {% if config.primary_button.shape == 'pill' %}selected{% endif %}>Pill</option>
+                    <option value="square" {% if config.primary_button.shape == 'square' %}selected{% endif %}>Square</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Layout Variant -->
+    {% if section.section_type == 'hero' or section.section_type == 'statistics' or section.section_type == 'testimonials' or section.section_type == 'what_makes_me_different' or section.section_type == 'featured_publications' or section.section_type == 'services' or section.section_type == 'meet_kim' or section.section_type == 'free_resource' %}
+    <div class="mb-8 border-t-2 border-gray-200 pt-6">
+        <h2 class="text-2xl font-semibold text-navy-deep mb-4 flex items-center gap-2">
+            <i class="fas fa-palette text-gold"></i>
+            Design & Layout
+        </h2>
+        
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-navy-deep mb-2">How should this section be arranged?</label>
+        <select name="layout_variant" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+            {% if section.section_type == 'hero' %}
+            <option value="text_left_image_right" {% if config.layout_variant == 'text_left_image_right' %}selected{% endif %}>Text Left, Image Right</option>
+            <option value="centered_stack" {% if config.layout_variant == 'centered_stack' %}selected{% endif %}>Centered Stack</option>
+            {% else %}
+            <option value="cards_grid" {% if config.layout_variant == 'cards_grid' %}selected{% endif %}>Cards Grid</option>
+            <option value="centered_stack" {% if config.layout_variant == 'centered_stack' %}selected{% endif %}>Centered Stack</option>
+            {% endif %}
+        </select>
+    </div>
+    {% endif %}
+    
+    <!-- Background Style -->
+    {% if section.section_type == 'hero' or section.section_type == 'statistics' or section.section_type == 'testimonials' or section.section_type == 'pain_points' or section.section_type == 'what_makes_me_different' or section.section_type == 'featured_publications' or section.section_type == 'services' %}
+    <div class="mb-6 border-t-2 border-gray-200 pt-6">
+        <h2 class="text-2xl font-semibold text-navy-deep mb-4 flex items-center gap-2">
+            <i class="fas fa-palette text-gold"></i>
+            Background & Styling
+        </h2>
+        
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-navy-deep mb-2">Background Style</label>
+            <select name="background_style" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                <option value="dark_band" {% if config.background_style == 'dark_band' %}selected{% endif %}>Dark Band</option>
+                <option value="soft_gradient" {% if config.background_style == 'soft_gradient' %}selected{% endif %}>Soft Gradient</option>
+                <option value="light_surface" {% if config.background_style == 'light_surface' %}selected{% endif %}>Light Surface</option>
+            </select>
+        </div>
+        
+        <!-- Background Image -->
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-navy-deep mb-2">
+                <i class="fas fa-image mr-2 text-gray-500"></i>Background Image (Optional)
+            </label>
+            <p class="text-xs text-gray-500 mb-2">Add an image behind all content in this section</p>
+            <div class="flex gap-2 mb-2">
+                <input type="text" name="background_image_url" id="background_image_url" 
+                       value="{{ config.background_image.url|default:'' }}" 
+                       class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold text-base"
+                       placeholder="https://... or click Pick Image">
+                <button type="button" onclick="openImagePickerModal('background_image_url')" 
+                        class="px-6 py-3 bg-gold text-navy-deep rounded-lg hover:bg-champagne transition-colors font-semibold whitespace-nowrap shadow-lg hover:shadow-xl">
+                    <i class="fas fa-images mr-2"></i> Pick Image
+                </button>
+            </div>
+            <input type="text" name="background_image_alt" 
+                   value="{{ config.background_image.alt_text|default:'' }}" 
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                   placeholder="Alt text (for accessibility)">
+            {% if config.background_image.url %}
+            <div class="mt-4">
+                <img src="{{ config.background_image.url }}" alt="Background preview" 
+                     class="max-w-xs rounded-lg border border-gray-300">
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Gradient Options -->
+        <div class="mb-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <label class="block text-sm font-semibold text-navy-deep mb-4">
+                <i class="fas fa-fill-drip mr-2 text-gray-500"></i>Gradient Background (Optional)
+            </label>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gradient Type</label>
+                <select name="gradient_type" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                    <option value="none" {% if config.gradient.type == 'none' or not config.gradient.type %}selected{% endif %}>None (Use Background Style above)</option>
+                    <option value="linear" {% if config.gradient.type == 'linear' %}selected{% endif %}>Linear Gradient</option>
+                    <option value="radial" {% if config.gradient.type == 'radial' %}selected{% endif %}>Radial Gradient</option>
+                    <option value="conic" {% if config.gradient.type == 'conic' %}selected{% endif %}>Conic Gradient</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gradient Colors</label>
+                <p class="text-xs text-gray-500 mb-3">Select 2 or more colors for your gradient</p>
+                
+                <!-- Hidden input to store comma-separated values -->
+                <input type="hidden" name="gradient_colors" id="gradient_colors_hidden" 
+                       value="{{ config.gradient.colors|join:', '|default:'' }}">
+                
+                <!-- Color picker container -->
+                <div id="gradientColorsContainer" class="space-y-2">
+                    <!-- Colors will be dynamically added here -->
+                </div>
+                
+                <!-- Add Color Button -->
+                <button type="button" onclick="window.addGradientColor()" 
+                        class="mt-3 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
+                    <i class="fas fa-plus mr-2"></i> Add Color
+                </button>
+                
+                <p class="text-xs text-gray-500 mt-2">Click "Add Color" to add more colors to your gradient</p>
+            </div>
+            
+            <script>
+            // Make functions globally accessible for dynamically loaded forms
+            (function() {
+            window.initializeGradientColors = function() {
+                const hiddenInput = document.getElementById('gradient_colors_hidden');
+                if (!hiddenInput) return;
+                
+                const container = document.getElementById('gradientColorsContainer');
+                if (!container) return;
+                
+                const colors = hiddenInput.value ? hiddenInput.value.split(',').map(c => c.trim()).filter(c => c) : [];
+                
+                // If no colors exist, add 2 default colors
+                if (colors.length === 0) {
+                    colors.push('#1e3a8a', '#3b82f6');
+                }
+                
+                // Clear container
+                container.innerHTML = '';
+                
+                // Add color picker for each color
+                colors.forEach((color, index) => {
+                    window.addGradientColorPicker(color, index);
+                });
+            };
+            
+            window.addGradientColor = function(color = '#3b82f6') {
+                const container = document.getElementById('gradientColorsContainer');
+                if (!container) return;
+                
+                const index = container.children.length;
+                window.addGradientColorPicker(color, index);
+                window.updateGradientColorsHidden();
+            };
+            
+            window.addGradientColorPicker = function(color, index) {
+                const container = document.getElementById('gradientColorsContainer');
+                if (!container) return;
+                
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'flex items-center gap-2';
+                colorDiv.innerHTML = `
+                    <input type="color" 
+                           value="${color}" 
+                           onchange="window.updateGradientColorsHidden()"
+                           class="w-16 h-10 rounded border-2 border-gray-300 cursor-pointer"
+                           title="Select color">
+                    <input type="text" 
+                           value="${color}" 
+                           onchange="window.updateGradientColorFromText(this)"
+                           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                           placeholder="#3b82f6"
+                           pattern="^#[0-9A-Fa-f]{6}$"
+                           title="Hex color code (e.g., #3b82f6)">
+                    <button type="button" 
+                            onclick="window.removeGradientColor(this)"
+                            class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                            title="Remove color">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(colorDiv);
+            };
+            
+            window.updateGradientColorFromText = function(textInput) {
+                const colorInput = textInput.previousElementSibling;
+                const colorValue = textInput.value.trim();
+                if (/^#[0-9A-Fa-f]{6}$/.test(colorValue)) {
+                    colorInput.value = colorValue;
+                    window.updateGradientColorsHidden();
+                } else {
+                    // Invalid color, revert to color picker value
+                    textInput.value = colorInput.value;
+                }
+            };
+            
+            window.removeGradientColor = function(button) {
+                const container = document.getElementById('gradientColorsContainer');
+                if (!container) return;
+                
+                if (container.children.length > 2) {
+                    button.closest('div').remove();
+                    window.updateGradientColorsHidden();
+                } else {
+                    alert('You need at least 2 colors for a gradient');
+                }
+            };
+            
+            window.updateGradientColorsHidden = function() {
+                const container = document.getElementById('gradientColorsContainer');
+                const hiddenInput = document.getElementById('gradient_colors_hidden');
+                
+                if (!container || !hiddenInput) return;
+                
+                const colors = [];
+                container.querySelectorAll('input[type="color"]').forEach(colorInput => {
+                    colors.push(colorInput.value);
+                });
+                
+                hiddenInput.value = colors.join(', ');
+            };
+            
+            })(); // Immediately execute to define functions
+            
+            // Initialize when form loads (for dynamically loaded forms)
+            if (document.getElementById('gradientColorsContainer')) {
+                setTimeout(function() {
+                    window.initializeGradientColors();
+                }, 100);
+            }
+            </script>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gradient Direction</label>
+                <select name="gradient_direction" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                    <option value="to-right" {% if config.gradient.direction == 'to-right' or not config.gradient.direction %}selected{% endif %}>Left → Right</option>
+                    <option value="to-bottom" {% if config.gradient.direction == 'to-bottom' %}selected{% endif %}>Top → Bottom</option>
+                    <option value="to-left" {% if config.gradient.direction == 'to-left' %}selected{% endif %}>Right → Left</option>
+                    <option value="to-top" {% if config.gradient.direction == 'to-top' %}selected{% endif %}>Bottom → Top</option>
+                    <option value="to-top-right" {% if config.gradient.direction == 'to-top-right' %}selected{% endif %}>Bottom Left → Top Right</option>
+                    <option value="to-bottom-right" {% if config.gradient.direction == 'to-bottom-right' %}selected{% endif %}>Top Left → Bottom Right</option>
+                    <option value="to-top-left" {% if config.gradient.direction == 'to-top-left' %}selected{% endif %}>Bottom Right → Top Left</option>
+                    <option value="to-bottom-left" {% if config.gradient.direction == 'to-bottom-left' %}selected{% endif %}>Top Right → Bottom Left</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Image Position (for sections with images) -->
+    {% if section.section_type == 'hero' or section.section_type == 'credibility' or section.section_type == 'meet_kim' or section.section_type == 'free_resource' %}
+    <div class="mb-6">
+        <label class="block text-sm font-semibold text-navy-deep mb-2">Image Position</label>
+        <select name="image_position" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+            <option value="right" {% if config.image_position == 'right' %}selected{% endif %}>Right</option>
+            <option value="left" {% if config.image_position == 'left' %}selected{% endif %}>Left</option>
+            {% if section.section_type == 'hero' %}
+            <option value="background" {% if config.image_position == 'background' %}selected{% endif %}>Background</option>
+            {% endif %}
+        </select>
+    </div>
+    {% endif %}
+    
+    <!-- Toggles -->
+    <div class="mb-8 border-t-2 border-gray-200 pt-6">
+        <h2 class="text-2xl font-semibold text-navy-deep mb-4 flex items-center gap-2">
+            <i class="fas fa-toggle-on text-gold"></i>
+            Visibility Settings
+        </h2>
+        <p class="text-gray-600 text-sm mb-4">Control when and how this section appears on your website</p>
+        <div class="space-y-3">
+            <label class="flex items-center">
+                <input type="checkbox" name="show_section" {% if config.show_section != False %}checked{% endif %} 
+                       class="w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold">
+                <span class="ml-3 text-gray-700">Show Section on Live Site</span>
+            </label>
+            <label class="flex items-center">
+                <input type="checkbox" name="show_divider_above" {% if config.show_divider_above %}checked{% endif %} 
+                       class="w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold">
+                <span class="ml-3 text-gray-700">Show Divider Above</span>
+            </label>
+            <label class="flex items-center">
+                <input type="checkbox" name="show_divider_below" {% if config.show_divider_below %}checked{% endif %} 
+                       class="w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold">
+                <span class="ml-3 text-gray-700">Show Divider Below</span>
+            </label>
+            {% if section.section_type == 'hero' or section.section_type == 'services' or section.section_type == 'free_resource' %}
+            <label class="flex items-center">
+                <input type="checkbox" name="emphasize_as_key_section" {% if config.emphasize_as_key_section %}checked{% endif %} 
+                       class="w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold">
+                <span class="ml-3 text-gray-700">Emphasize as Key Section</span>
+            </label>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Submit Buttons (Sticky) -->
+    <div class="sticky bottom-0 bg-white border-t border-gray-200 -mx-8 -mb-8 px-8 py-4 mt-8 flex items-center justify-end gap-4">
+        <a href="{% url 'dashboard:page_builder' section.page.id %}" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            Cancel
+        </a>
+        <button type="submit" class="px-6 py-3 bg-navy-deep text-white rounded-lg hover:bg-navy-midnight transition-colors shadow-lg">
+            <i class="fas fa-save mr-2"></i> Save Changes
+        </button>
+    </div>
+</form>
+
+<!-- Preview Note -->
+<div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg p-6">
+    <div class="flex items-start gap-4">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-lightbulb text-blue-600 text-xl"></i>
+        </div>
+        <div>
+            <h3 class="text-lg font-semibold text-blue-900 mb-2">Ready to see your changes?</h3>
+            <p class="text-blue-800 mb-3">
+                After saving, click "Preview Website" in the sidebar to see how this section looks on your live site. 
+                Your changes will appear immediately!
+            </p>
+            <a href="{% url 'home' %}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                <i class="fas fa-external-link-alt mr-2"></i>
+                Open Website Preview
+            </a>
+        </div>
+    </div>
+</div>
+
+{% include 'dashboard/image_picker_modal.html' %}
+{% endblock %}
+

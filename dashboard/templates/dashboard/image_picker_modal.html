@@ -1,0 +1,316 @@
+<!-- Image Picker Modal -->
+<div id="imagePickerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+            <h3 class="text-xl font-semibold text-navy-deep">Select or Upload Image</h3>
+            <button onclick="closeImagePickerModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="border-b border-gray-200 flex">
+            <button onclick="switchImagePickerTab('upload')" id="tabUpload" 
+                    class="px-6 py-3 font-medium text-navy-deep border-b-2 border-navy-deep transition-colors">
+                <i class="fas fa-upload mr-2"></i>Upload New Image
+            </button>
+            <button onclick="switchImagePickerTab('gallery')" id="tabGallery" 
+                    class="px-6 py-3 font-medium text-gray-600 border-b-2 border-transparent hover:text-navy-deep transition-colors">
+                <i class="fas fa-images mr-2"></i>Choose from Gallery
+            </button>
+            <button onclick="switchImagePickerTab('url')" id="tabUrl" 
+                    class="px-6 py-3 font-medium text-gray-600 border-b-2 border-transparent hover:text-navy-deep transition-colors">
+                <i class="fas fa-link mr-2"></i>Paste URL
+            </button>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-6">
+            <!-- Upload Tab -->
+            <div id="uploadTab" class="tab-content">
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-navy-deep mb-3">Upload Image to Cloudinary</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gold transition-colors">
+                        <input type="file" id="imageUploadInput" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                        <label for="imageUploadInput" class="cursor-pointer">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-700 font-medium mb-2">Click to upload or drag and drop</p>
+                            <p class="text-sm text-gray-500">Any image format - automatically converted to WebP</p>
+                        </label>
+                    </div>
+                    <div id="uploadProgress" class="hidden mt-4">
+                        <div class="bg-gray-200 rounded-full h-2">
+                            <div id="uploadProgressBar" class="bg-gold h-2 rounded-full transition-all" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2 text-center">Uploading...</p>
+                    </div>
+                    <div id="uploadPreview" class="hidden mt-4">
+                        <img id="uploadedImagePreview" src="" alt="Uploaded" class="max-w-full max-h-64 mx-auto rounded-lg shadow-lg">
+                        <p class="text-sm text-green-600 mt-2 text-center">
+                            <i class="fas fa-check-circle mr-1"></i>Upload successful!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gallery Tab -->
+            <div id="galleryTab" class="tab-content hidden">
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <label class="block text-sm font-semibold text-navy-deep">Your Cloudinary Gallery</label>
+                        <button onclick="loadGalleryImages()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm">
+                            <i class="fas fa-sync-alt mr-1"></i>Refresh
+                        </button>
+                    </div>
+                    <div id="galleryLoading" class="text-center py-8">
+                        <i class="fas fa-spinner fa-spin text-3xl text-gray-400 mb-3"></i>
+                        <p class="text-gray-600">Loading gallery...</p>
+                    </div>
+                    <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden">
+                        <!-- Gallery images will be loaded here -->
+                    </div>
+                    <div id="galleryEmpty" class="hidden text-center py-8">
+                        <i class="fas fa-images text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-600">No images in gallery yet. Upload some images first!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- URL Tab -->
+            <div id="urlTab" class="tab-content hidden">
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-navy-deep mb-3">Paste Image URL</label>
+                    <input type="text" id="imageUrlInput" placeholder="https://res.cloudinary.com/... or any image URL" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold">
+                    <p class="text-sm text-gray-500 mt-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Paste a Cloudinary URL or any external image URL
+                    </p>
+                    <div id="urlPreview" class="hidden mt-4">
+                        <img id="urlImagePreview" src="" alt="Preview" class="max-w-full max-h-64 mx-auto rounded-lg shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="p-6 border-t border-gray-200 flex justify-end gap-4">
+            <button onclick="closeImagePickerModal()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                Cancel
+            </button>
+            <button id="selectImageBtn" onclick="selectImageFromPicker()" class="px-6 py-2 bg-navy-deep text-white rounded-lg hover:bg-navy-midnight transition-colors hidden">
+                <i class="fas fa-check mr-2"></i>Select Image
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Ensure functions are in global scope
+window.currentImageFieldId = null;
+window.currentSelectedImageUrl = null;
+window.currentTab = 'upload';
+
+window.openImagePickerModal = function(fieldId) {
+    window.currentImageFieldId = fieldId;
+    window.currentSelectedImageUrl = null;
+    document.getElementById('imagePickerModal').classList.remove('hidden');
+    window.switchImagePickerTab('upload');
+    window.loadGalleryImages(); // Preload gallery
+};
+
+window.closeImagePickerModal = function() {
+    document.getElementById('imagePickerModal').classList.add('hidden');
+    window.currentImageFieldId = null;
+    window.currentSelectedImageUrl = null;
+    document.getElementById('selectImageBtn').classList.add('hidden');
+    // Reset tabs
+    document.getElementById('uploadTab').classList.remove('hidden');
+    document.getElementById('galleryTab').classList.add('hidden');
+    document.getElementById('urlTab').classList.add('hidden');
+    // Reset upload form
+    document.getElementById('imageUploadInput').value = '';
+    document.getElementById('uploadProgress').classList.add('hidden');
+    document.getElementById('uploadPreview').classList.add('hidden');
+    document.getElementById('urlPreview').classList.add('hidden');
+}
+
+window.switchImagePickerTab = function(tab) {
+    window.currentTab = tab;
+    
+    // Update tab buttons
+    document.querySelectorAll('[id^="tab"]').forEach(btn => {
+        btn.classList.remove('border-navy-deep', 'text-navy-deep');
+        btn.classList.add('border-transparent', 'text-gray-600');
+    });
+    
+    // Hide all tabs
+    document.getElementById('uploadTab').classList.add('hidden');
+    document.getElementById('galleryTab').classList.add('hidden');
+    document.getElementById('urlTab').classList.add('hidden');
+    
+    // Show selected tab
+    if (tab === 'upload') {
+        document.getElementById('tabUpload').classList.remove('border-transparent', 'text-gray-600');
+        document.getElementById('tabUpload').classList.add('border-navy-deep', 'text-navy-deep');
+        document.getElementById('uploadTab').classList.remove('hidden');
+    } else if (tab === 'gallery') {
+        document.getElementById('tabGallery').classList.remove('border-transparent', 'text-gray-600');
+        document.getElementById('tabGallery').classList.add('border-navy-deep', 'text-navy-deep');
+        document.getElementById('galleryTab').classList.remove('hidden');
+        loadGalleryImages();
+    } else if (tab === 'url') {
+        document.getElementById('tabUrl').classList.remove('border-transparent', 'text-gray-600');
+        document.getElementById('tabUrl').classList.add('border-navy-deep', 'text-navy-deep');
+        document.getElementById('urlTab').classList.remove('hidden');
+    }
+}
+
+window.handleImageUpload = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // No size validation - backend will compress any size to WebP
+    
+    // Show progress
+    document.getElementById('uploadProgress').classList.remove('hidden');
+    document.getElementById('uploadProgressBar').style.width = '0%';
+    document.getElementById('uploadPreview').classList.add('hidden');
+    
+    // Create FormData (use 'file' field name as per guide)
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'insight-seeker/uploads');
+    formData.append('tags', '');  // Optional tags
+    
+    // Upload to Cloudinary via Django
+    fetch('/dashboard/upload-image/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Use web_url (optimized) for selection
+            window.currentSelectedImageUrl = data.web_url || data.secure_url || data.url;
+            document.getElementById('uploadedImagePreview').src = window.currentSelectedImageUrl;
+            document.getElementById('uploadPreview').classList.remove('hidden');
+            document.getElementById('uploadProgress').classList.add('hidden');
+            document.getElementById('selectImageBtn').classList.remove('hidden');
+        } else {
+            alert('Upload failed: ' + (data.error || 'Unknown error'));
+            document.getElementById('uploadProgress').classList.add('hidden');
+        }
+    })
+    .catch(error => {
+        console.error('Upload error:', error);
+        alert('Upload failed. Please try again.');
+        document.getElementById('uploadProgress').classList.add('hidden');
+    });
+}
+
+window.loadGalleryImages = function() {
+    document.getElementById('galleryLoading').classList.remove('hidden');
+    document.getElementById('galleryGrid').classList.add('hidden');
+    document.getElementById('galleryEmpty').classList.add('hidden');
+    
+    fetch('/dashboard/gallery-images/')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('galleryLoading').classList.add('hidden');
+            
+            if (data.success && data.images && data.images.length > 0) {
+                const grid = document.getElementById('galleryGrid');
+                grid.innerHTML = '';
+                
+        data.images.forEach(image => {
+            const div = document.createElement('div');
+            div.className = 'image-option cursor-pointer border-2 border-gray-200 rounded-lg overflow-hidden hover:border-gold transition-colors';
+            // Use web_url (optimized) for selection, thumb_url for thumbnail display
+            div.setAttribute('data-url', image.web_url || image.url);
+            div.setAttribute('data-public-id', image.public_id);
+            div.onclick = function() {
+                selectGalleryImage(image.web_url || image.url);
+            };
+            
+            const img = document.createElement('img');
+            img.src = image.thumbnail || image.thumb_url || image.url;
+            img.alt = image.title || image.public_id;
+            img.className = 'w-full h-32 object-cover';
+            
+            div.appendChild(img);
+            grid.appendChild(div);
+        });
+                
+                document.getElementById('galleryGrid').classList.remove('hidden');
+            } else {
+                document.getElementById('galleryEmpty').classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Gallery load error:', error);
+            document.getElementById('galleryLoading').classList.add('hidden');
+            document.getElementById('galleryEmpty').classList.remove('hidden');
+        });
+}
+
+window.selectGalleryImage = function(url) {
+    window.currentSelectedImageUrl = url;
+    document.getElementById('selectImageBtn').classList.remove('hidden');
+    
+    // Highlight selected
+    document.querySelectorAll('.image-option').forEach(opt => {
+        opt.classList.remove('ring-2', 'ring-gold', 'bg-gold/10');
+        if (opt.getAttribute('data-url') === url) {
+            opt.classList.add('ring-2', 'ring-gold', 'bg-gold/10');
+        }
+    });
+}
+
+// Handle URL input
+document.addEventListener('DOMContentLoaded', function() {
+    const urlInput = document.getElementById('imageUrlInput');
+    if (urlInput) {
+        urlInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                window.currentSelectedImageUrl = url;
+                document.getElementById('urlImagePreview').src = url;
+                document.getElementById('urlPreview').classList.remove('hidden');
+                document.getElementById('selectImageBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('urlPreview').classList.add('hidden');
+                document.getElementById('selectImageBtn').classList.add('hidden');
+            }
+        });
+    }
+    
+    // Close modal on outside click
+    document.getElementById('imagePickerModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeImagePickerModal();
+        }
+    });
+});
+
+window.selectImageFromPicker = function() {
+    if (window.currentSelectedImageUrl && window.currentImageFieldId) {
+        const field = document.getElementById(window.currentImageFieldId);
+            if (field) {
+                field.value = window.currentSelectedImageUrl;
+                // Update preview if exists
+                const previewId = window.currentImageFieldId + '_preview';
+                const preview = document.getElementById(previewId);
+                if (preview) {
+                    preview.src = window.currentSelectedImageUrl;
+                preview.classList.remove('hidden');
+            }
+        }
+    }
+    window.closeImagePickerModal();
+};
+</script>

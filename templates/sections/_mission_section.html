@@ -1,0 +1,37 @@
+{% if mission_section.show_section %}
+<section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {% if mission_section.show_divider_above %}
+        <div class="golden-thread mb-16 bg-gold"></div>
+        {% endif %}
+        
+        {% if mission_section.icon %}
+        <div class="text-gold text-5xl mb-6">
+            <i class="{{ mission_section.icon }}"></i>
+        </div>
+        {% endif %}
+        
+        <h2 class="font-serif text-4xl md:text-5xl text-navy-deep mb-8">
+            {{ mission_section.headline }}
+        </h2>
+        
+        <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed text-left">
+            {{ mission_section.body_text|linebreaks }}
+        </div>
+        
+        {% if mission_section.supplemental_link_label %}
+        <div class="mt-8">
+            <a href="{{ mission_section.supplemental_link_url }}" class="text-gold hover:text-navy-deep transition-colors font-medium">
+                {{ mission_section.supplemental_link_label }} →
+            </a>
+        </div>
+        {% endif %}
+        
+        {% if mission_section.show_divider_below %}
+        <div class="golden-thread mt-16 bg-gold"></div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+

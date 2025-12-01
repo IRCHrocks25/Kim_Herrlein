@@ -1,0 +1,159 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Pages - Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <div class="flex items-center gap-4 mb-4">
+        <div class="w-16 h-16 bg-gold/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-file-alt text-gold text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-3xl font-serif text-navy-deep font-bold mb-1">Your Pages</h1>
+            <p class="text-gray-600">Manage your website pages and edit their content</p>
+        </div>
+    </div>
+    
+    <!-- Help Banner -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-lg p-4 mb-6">
+        <div class="flex items-start">
+            <i class="fas fa-question-circle text-blue-600 mt-1 mr-3 text-xl"></i>
+            <div>
+                <p class="text-blue-900 font-semibold mb-1">How to edit your website</p>
+                <p class="text-blue-800 text-sm">
+                    Click "Open Page Builder" on any page below to see all its sections. Then click "Edit" on any section to change its content, images, and buttons.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create New Page Button -->
+    <div class="mb-6 flex justify-end">
+        <button onclick="document.getElementById('createPageModal').classList.remove('hidden')" class="px-6 py-3 bg-gold text-navy-deep rounded-lg hover:bg-champagne transition-colors font-semibold shadow-lg hover:shadow-xl">
+            <i class="fas fa-plus mr-2"></i> Create New Page
+        </button>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 {% if pages.count == 1 %}md:grid-cols-1 max-w-2xl mx-auto{% elif pages.count == 2 %}md:grid-cols-2{% else %}md:grid-cols-2 lg:grid-cols-3{% endif %} gap-6">
+    {% for page in pages %}
+    <div class="bg-white rounded-xl shadow-lg border-2 border-gray-200 p-6 hover:shadow-xl hover:border-gold transition-all">
+        <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 bg-navy-deep/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-file-alt text-navy-deep"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold text-navy-deep">{{ page.name }}</h2>
+                        <p class="text-sm text-gray-500">/{{ page.slug }}</p>
+                    </div>
+                </div>
+                {% if page.is_active %}
+                <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                    <i class="fas fa-check-circle mr-1"></i> Live on Website
+                </span>
+                {% else %}
+                <span class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                    <i class="fas fa-pause-circle mr-1"></i> Not Active
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if page.description %}
+        <p class="text-gray-600 text-sm mb-4 bg-gray-50 rounded-lg p-3">{{ page.description|truncatewords:20 }}</p>
+        {% endif %}
+        
+        <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+            <div class="flex items-center gap-2 text-sm text-gray-600">
+                <i class="fas fa-layer-group text-gold"></i>
+                <span class="font-medium">{{ page.sections.count }} section{{ page.sections.count|pluralize }}</span>
+            </div>
+        </div>
+        
+        <a href="{% url 'dashboard:page_builder' page.id %}" class="block w-full text-center px-6 py-3 bg-navy-deep text-white rounded-lg hover:bg-navy-midnight transition-colors font-semibold shadow-lg hover:shadow-xl">
+            <i class="fas fa-edit mr-2"></i> Open Page Builder
+        </a>
+    </div>
+    {% empty %}
+    <div class="col-span-full">
+        <div class="bg-white rounded-xl shadow-lg border-2 border-dashed border-gray-300 p-12 text-center max-w-2xl mx-auto">
+            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-file-alt text-4xl text-gray-400"></i>
+            </div>
+            <h3 class="text-2xl font-semibold text-navy-deep mb-3">No Pages Yet</h3>
+            <p class="text-gray-600 mb-6">Let's create your first page to get started!</p>
+            <button onclick="document.getElementById('createPageModal').classList.remove('hidden')" class="px-8 py-3 bg-navy-deep text-white rounded-lg hover:bg-navy-midnight transition-colors font-semibold shadow-lg hover:shadow-xl">
+                <i class="fas fa-plus mr-2"></i> Create Your First Page
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Create Page Modal -->
+<div id="createPageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-navy-deep">Create New Page</h3>
+                <button onclick="document.getElementById('createPageModal').classList.add('hidden')" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <form method="POST" action="{% url 'dashboard:page_create' %}" class="p-6">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-navy-deep mb-2">Page Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" required 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                           placeholder="e.g., Homepage, About, Services">
+                    <p class="text-xs text-gray-500 mt-1">This is what you'll see in the dashboard</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-navy-deep mb-2">URL Slug (Optional)</label>
+                    <input type="text" name="slug" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                           placeholder="e.g., home, about, services">
+                    <p class="text-xs text-gray-500 mt-1">Leave blank to auto-generate from page name</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-navy-deep mb-2">Description (Optional)</label>
+                    <textarea name="description" rows="2" 
+                              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gold focus:border-gold"
+                              placeholder="Brief description of this page"></textarea>
+                </div>
+            </div>
+            
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="document.getElementById('createPageModal').classList.add('hidden')" 
+                        class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                    Cancel
+                </button>
+                <button type="submit" 
+                        class="flex-1 px-4 py-3 bg-navy-deep text-white rounded-lg hover:bg-navy-midnight transition-colors font-semibold">
+                    <i class="fas fa-plus mr-2"></i> Create Page
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Close modal on outside click
+document.getElementById('createPageModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.classList.add('hidden');
+    }
+});
+</script>
+{% endblock %}
+
